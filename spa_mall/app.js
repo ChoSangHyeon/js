@@ -7,6 +7,8 @@ const port = 3000;
 connect();
 const goodsRouter = require("./routes/goods.js");
 
+
+
 const requestMiddleware = (req,res,next)=>{
   console.log("Request URL:",req.originalUrl,"-",new Date());
   next();

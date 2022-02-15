@@ -35,8 +35,8 @@ router.get('/boards/:userName', async (req, res) => {
 router.delete("/boards/:boardId", async (req, res) => {
   const { boardId } = req.params;
 
-  const existsCarts = await Boards.find({ boardId: Number(boardId) });
-  if (existsCarts.length > 0) {
+  const existsBoard = await Boards.find({ boardId: Number(boardId) });
+  if (existsBoard.length > 0) {
     await Boards.deleteOne({ boardId: Number(boardId) });
     await Comments.deleteMany({ boardId: Number(boardId) })
   }
@@ -100,11 +100,10 @@ router.put("/boards/comment/:commentId", async (req, res) => {
 });
 
 router.delete("/boards/comment/:commentId", async (req, res) => {
-  const { commentId } = req.params.commentId;
-
-  const existsCarts = await Comments.find({ commentId: Number(commentId) });
-  if (existsCarts.length > 0) {
-    await Comments.deleteOne({ bcommentId: Number(commentId) })
+  const { commentId } = req.params;
+  const existsComment = await Comments.find({ commentId: Number(commentId) });
+  if (existsComment.length > 0) {
+    await Comments.deleteOne({ commentId: Number(commentId) })
   }
 
   res.json({ result: "success" });

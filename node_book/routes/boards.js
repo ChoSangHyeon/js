@@ -60,7 +60,7 @@ router.put("/boards/:boardId", async (req, res) => {
     await Boards.updateMany({boardId: Number(boardId)},{ $set: {userName,title, mainComment,writeDate : nowday, } } );
   }
 
-  res.status(201).json({ success: true });
+  res.status(201).json({ result: "success" });
 })
 
 router.get('/boards/:boardId', async (req, res) => {
@@ -99,7 +99,7 @@ router.put("/boards/comment/:commentId", async (req, res) => {
     await Comments.updateOne({commentId: Number(commentId)},{ $set: { Comment,writeDate : nowday, } } );
   }
 
-  res.status(201).json({ success: true });
+  res.status(201).json({ result: "success" });
 });
 
 router.delete("/boards/comment/:commentId", async (req, res) => {

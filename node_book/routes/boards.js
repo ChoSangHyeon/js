@@ -9,18 +9,21 @@ router.get('/', (req, res) => {
 });
 
 router.get('/boards', async (req, res) => {
-  const board = await Boards.find().sort({writeDate:-1});
+  const boards = await Boards.find().sort({writeDate:-1});
 
-  res.json({ board, });
+  res.json({ boards, });
 });
 
 router.post('/boards', async (req, res) => {
   const { userName, title, mainComment } = req.body;
   const nowday = new Date();
   console.log(nowday);
+  if (!userName || !title || !mainComment){
+    res.status(400).json({result:"빈곳없이 입력해주세요"})
+  }
   await Boards.create({userName, title, mainComment,writeDate : nowday });
 
-  res.json({ result: "success" });
+  res.status(201).json({ result: "success" });
 
 });
 
@@ -41,7 +44,7 @@ router.delete("/boards/:boardId", async (req, res) => {
     await Comments.deleteMany({ boardId: Number(boardId) })
   }
 
-  res.json({ result: "success" });
+  res.status(204).json({ result: "success" });
 });
 
 router.put("/boards/:boardId", async (req, res) => {
@@ -57,13 +60,13 @@ router.put("/boards/:boardId", async (req, res) => {
     await Boards.updateMany({boardId: Number(boardId)},{ $set: {userName,title, mainComment,writeDate : nowday, } } );
   }
 
-  res.json({ success: true });
+  res.status(201).json({ success: true });
 })
 
 router.get('/boards/:boardId', async (req, res) => {
   const {boardId} = req.params;
   const [comments] = await Comments.find({boardId}).sort({writeDate:-1});
-
+  
   res.json({comments,});
 });
 
@@ -72,12 +75,12 @@ router.post('/boards/:boardId', async (req, res) => {
   const { Comment } = req.body;
   const nowday = new Date();
   if (!Comment){
-    res.json({result:"댓글내용을 입력해주세요"})
+    res.status(400).json({result:"댓글내용을 입력해주세요"})
   }
 
   await Comments.create({boardId, Comment,writeDate : nowday });
 
-  res.json({ result: "success" });
+  res.status(201).json({ result: "success" });
 
 });
 
@@ -86,7 +89,7 @@ router.put("/boards/comment/:commentId", async (req, res) => {
   const { Comment } = req.body;
   const nowday = new Date();
   if (!Comment){
-    res.json({result:"댓글내용을 입력해주세요"})
+    res.status(400).json({result:"댓글내용을 입력해주세요"})
   }
 
   const existsCarts = await Comments.find({commentId: Number(commentId) });
@@ -96,7 +99,7 @@ router.put("/boards/comment/:commentId", async (req, res) => {
     await Comments.updateOne({commentId: Number(commentId)},{ $set: { Comment,writeDate : nowday, } } );
   }
 
-  res.json({ success: true });
+  res.status(201).json({ success: true });
 });
 
 router.delete("/boards/comment/:commentId", async (req, res) => {
@@ -106,7 +109,7 @@ router.delete("/boards/comment/:commentId", async (req, res) => {
     await Comments.deleteOne({ commentId: Number(commentId) })
   }
 
-  res.json({ result: "success" });
+  res.status(204).json({ result: "success" });
 });
 
 module.exports = router;

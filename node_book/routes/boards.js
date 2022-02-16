@@ -1,6 +1,7 @@
 const express = require("express");
 const Boards = require("../schemas/board");
 const Comments = require("../schemas/comment");
+const {DateTime} = require("luxon");
 const router = express.Router();
 
 
@@ -16,8 +17,7 @@ router.get('/boards', async (req, res) => {
 
 router.post('/boards', async (req, res) => {
   const { userName, title, mainComment } = req.body;
-  const nowday = new Date();
-  console.log(nowday);
+  const nowday = DateTime.now().setZone('Asia/seoul').toISO();
   if (!userName || !title || !mainComment){
     res.status(400).json({result:"빈곳없이 입력해주세요"})
   }
@@ -74,6 +74,7 @@ router.post('/boards/:boardId', async (req, res) => {
   const {boardId} = req.params;
   const { Comment } = req.body;
   const nowday = new Date();
+
   if (!Comment){
     res.status(400).json({result:"댓글내용을 입력해주세요"})
   }
@@ -88,6 +89,7 @@ router.put("/boards/comment/:commentId", async (req, res) => {
   const { commentId } = req.params.commentId;
   const { Comment } = req.body;
   const nowday = new Date();
+
   if (!Comment){
     res.status(400).json({result:"댓글내용을 입력해주세요"})
   }

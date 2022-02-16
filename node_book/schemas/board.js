@@ -14,7 +14,7 @@ const boardSchema = new mongoose.Schema({
       required: true,
     },
     writeDate: {
-      type: Date,
+      type: String,
       required: true,
     },
     mainComment: {

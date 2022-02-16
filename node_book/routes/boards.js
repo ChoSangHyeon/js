@@ -28,8 +28,8 @@ router.post('/boards', async (req, res) => {
 });
 
 router.get('/boards/:userName', async (req, res) => {
-  const {userName} = req.params.userName;
-  const [boards] = await Boards.find({ userName }).sort({writeDate:-1});
+  const {userName} = req.params;
+  const boards = await Boards.find({userName}).sort({writeDate:-1});
 
   res.json({boards,});
 });
@@ -50,7 +50,7 @@ router.delete("/boards/:boardId", async (req, res) => {
 router.put("/boards/:boardId", async (req, res) => {
   const { boardId } = req.params;
   const { userName, title, mainComment } = req.body;
-  const nowday = new Date();
+  const nowday = DateTime.now().setZone('Asia/seoul').toISO();
 
   const existsCarts = await Boards.find({boardId: Number(boardId) });
   if (!existsCarts.length) {
@@ -63,23 +63,25 @@ router.put("/boards/:boardId", async (req, res) => {
   res.status(201).json({ result: "success" });
 })
 
-router.get('/boards/:boardId', async (req, res) => {
+router.get('/boards/comment/:boardId', async (req, res) => {
   const {boardId} = req.params;
-  const [comments] = await Comments.find({boardId}).sort({writeDate:-1});
-  
+  const comments = await Comments.find({boardId:Number(boardId)}).sort({writeDate:-1});
+
+  console.log(comments);
+
   res.json({comments,});
 });
 
-router.post('/boards/:boardId', async (req, res) => {
+router.post('/boards/comment/:boardId', async (req, res) => {
   const {boardId} = req.params;
   const { Comment } = req.body;
-  const nowday = new Date();
+  const nowday = DateTime.now().setZone('Asia/seoul').toISO();
 
   if (!Comment){
     res.status(400).json({result:"댓글내용을 입력해주세요"})
   }
 
-  await Comments.create({boardId, Comment,writeDate : nowday });
+  await Comments.create({boardId:Number(boardId), Comment,writeDate : nowday });
 
   res.status(201).json({ result: "success" });
 
@@ -88,7 +90,7 @@ router.post('/boards/:boardId', async (req, res) => {
 router.put("/boards/comment/:commentId", async (req, res) => {
   const { commentId } = req.params.commentId;
   const { Comment } = req.body;
-  const nowday = new Date();
+  const nowday = DateTime.now().setZone('Asia/seoul').toISO();
 
   if (!Comment){
     res.status(400).json({result:"댓글내용을 입력해주세요"})

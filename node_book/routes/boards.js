@@ -67,8 +67,6 @@ router.get('/boards/comment/:boardId', async (req, res) => {
   const {boardId} = req.params;
   const comments = await Comments.find({boardId:Number(boardId)}).sort({writeDate:-1});
 
-  console.log(comments);
-
   res.json({comments,});
 });
 

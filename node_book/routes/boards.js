@@ -2,7 +2,6 @@ const express = require("express");
 const Boards = require("../schemas/board");
 const Comments = require("../schemas/comment");
 const {DateTime} = require("luxon");
-const comment = require("../schemas/comment");
 const router = express.Router();
 
 

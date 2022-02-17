@@ -2,6 +2,7 @@ const express = require("express");
 const Boards = require("../schemas/board");
 const Comments = require("../schemas/comment");
 const {DateTime} = require("luxon");
+const comment = require("../schemas/comment");
 const router = express.Router();
 
 
@@ -52,8 +53,8 @@ router.put("/boards/:boardId", async (req, res) => {
   const { userName, title, mainComment } = req.body;
   const nowday = DateTime.now().setZone('Asia/seoul').toISO();
 
-  const existsCarts = await Boards.find({boardId: Number(boardId) });
-  if (!existsCarts.length) {
+  const existsBoard = await Boards.find({boardId: Number(boardId) });
+  if (!existsBoard.length) {
     await Boards.create({userName, title, mainComment,writeDate : nowday,boardId });
   } else {
     
@@ -86,7 +87,7 @@ router.post('/boards/comment/:boardId', async (req, res) => {
 });
 
 router.put("/boards/comment/:commentId", async (req, res) => {
-  const { commentId } = req.params.commentId;
+  const { commentId } = req.params;
   const { Comment } = req.body;
   const nowday = DateTime.now().setZone('Asia/seoul').toISO();
 
@@ -94,11 +95,9 @@ router.put("/boards/comment/:commentId", async (req, res) => {
     res.status(400).json({result:"댓글내용을 입력해주세요"})
   }
 
-  const existsCarts = await Comments.find({commentId: Number(commentId) });
-  if (!existsCarts.length) {
-    await Comments.create({boardId, Comment,writeDate : nowday });
-  } else {
-    await Comments.updateOne({commentId: Number(commentId)},{ $set: { Comment,writeDate : nowday, } } );
+  const existsComment = await Comments.find({commentId: Number(commentId) });
+  if (existsComment.length) {
+    await Comments.updateOne({commentId: Number(commentId)},{ $set: { boardId : existsComment.boardId ,Comment,writeDate : nowday, } } );
   }
 
   res.status(201).json({ result: "success" });
